@@ -14,7 +14,10 @@ ENV GLIBC_VERSION=2.29-r0 \
     ODO_VERSION=v1.0.0-beta6 \
     OC_VERSION=4.2 \
     KUBECTL_VERSION=v1.14.6 \
-    SQUASHCTL_VERSION=v0.5.12
+    SQUASHCTL_VERSION=v0.5.12 \
+    TKN_VERSION=0.4.0 \
+    MAVEN_VERSION=3.6.2 \
+    JDK_VERSION=11
 
 # the plugin executes the commands relying on Bash
 RUN apk add --no-cache bash && \
@@ -39,14 +42,36 @@ RUN wget -qO /usr/local/bin/squashctl https://github.com/solo-io/squash/releases
 
 # install kubectl
 ADD https://storage.googleapis.com/kubernetes-release/release/${KUBECTL_VERSION}/bin/linux/amd64/kubectl /usr/local/bin/kubectl
-RUN sudo chmod +x /usr/local/bin/kubectl && \
+RUN chmod +x /usr/local/bin/kubectl && \
     kubectl version --client
 
-# install maven/openjdk11
-RUN apk --no-cache add openjdk11 --repository=http://dl-cdn.alpinelinux.org/alpine/edge/community \
-    && apk add procps nss \
-    && chmod 777 /home/theia
+# install tekton
+RUN mkdir ${HOME}/.vs-tekton && \
+    wget -qO- "https://github.com/tektoncd/cli/releases/download/v${TKN_VERSION}/tkn_${TKN_VERSION}_Linux_x86_64.tar.gz" | tar xvz -C /usr/local/bin && \
+    ln -s /usr/local/bin/tkn ${HOME}/.vs-tekton/tkn && \
+    tkn version
+
+# install openjdk
+RUN apk --no-cache add openjdk${JDK_VERSION} --repository=http://dl-cdn.alpinelinux.org/alpine/edge/community && \
+    apk add procps nss && \
+    chmod 777 /home/theia && \
+    find /usr/share/ca-certificates/mozilla/ -name "*.crt" -exec keytool -import -trustcacerts \
+    -keystore /usr/lib/jvm/java-${JDK_VERSION}-openjdk/jre/lib/security/cacerts  -storepass changeit -noprompt \
+    -file {} -alias {} \; && \
+    keytool -list -keystore /usr/lib/jvm/java-${JDK_VERSION}-openjdk/jre/lib/security/cacerts  --storepass changeit
 ENV JAVA_HOME /usr/lib/jvm/default-jvm/
+
+# install maven
+ENV MAVEN_HOME /usr/lib/mvn
+ENV PATH $MAVEN_HOME/bin:$PATH
+
+RUN wget http://archive.apache.org/dist/maven/maven-3/${MAVEN_VERSION}/binaries/apache-maven-${MAVEN_VERSION}-bin.tar.gz && \
+  tar -zxvf apache-maven-$MAVEN_VERSION-bin.tar.gz && \
+  rm apache-maven-$MAVEN_VERSION-bin.tar.gz && \
+  mv apache-maven-$MAVEN_VERSION /usr/lib/mvn
 ADD etc/before-start.sh /before-start.sh
+
+# install git
+RUN apk add --no-cache git openssh
 
 WORKDIR /projects
