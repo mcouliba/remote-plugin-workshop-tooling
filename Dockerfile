@@ -77,9 +77,9 @@ RUN apk add --no-cache git openssh
 
 # install siege
 RUN wget http://download.joedog.org/siege/siege-${SIEGE_VERSION}.tar.gz && \
-    tar -zxvf siege-${VERSION}.tar.gz && \
-    rm siege-${VERSION}.tar.gz && \
-    cd siege-${VERSION} && \
+    tar -zxvf siege-${SIEGE_VERSION}.tar.gz && \
+    rm siege-${SIEGE_VERSION}.tar.gz && \
+    cd siege-${SIEGE_VERSION} && \
     ./configure && \
     make install
 
