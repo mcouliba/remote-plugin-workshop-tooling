@@ -82,6 +82,6 @@ RUN apk add --no-cache g++ make && \
     rm siege-${SIEGE_VERSION}.tar.gz && \
     cd siege-${SIEGE_VERSION} && \
     ./configure && \
-    make install
+    make && make install
 
 WORKDIR /projects
