@@ -18,7 +18,7 @@ ENV GLIBC_VERSION=2.29-r0 \
     TKN_VERSION=0.4.0 \
     MAVEN_VERSION=3.6.2 \
     JDK_VERSION=11 \
-    SIEGE_VERSION=4.0.4
+    SIEGE_VERSION=3.1.4
 
 # the plugin executes the commands relying on Bash
 RUN apk add --no-cache bash curl && \
