@@ -17,10 +17,11 @@ ENV GLIBC_VERSION=2.29-r0 \
     SQUASHCTL_VERSION=v0.5.12 \
     TKN_VERSION=0.4.0 \
     MAVEN_VERSION=3.6.2 \
-    JDK_VERSION=11
+    JDK_VERSION=11 \
+    SIEGE_VERSION=4.0.4
 
 # the plugin executes the commands relying on Bash
-RUN apk add --no-cache bash && \
+RUN apk add --no-cache bash curl && \
     # install glibc compatibility layer package for Alpine Linux
     # see https://github.com/openshift/origin/issues/18942 for the details
     wget -O glibc-${GLIBC_VERSION}.apk https://github.com/andyshinn/alpine-pkg-glibc/releases/download/${GLIBC_VERSION}/glibc-${GLIBC_VERSION}.apk && \
@@ -73,5 +74,13 @@ ADD etc/before-start.sh /before-start.sh
 
 # install git
 RUN apk add --no-cache git openssh
+
+# install siege
+RUN wget http://download.joedog.org/siege/siege-${SIEGE_VERSION}.tar.gz && \
+    tar -zxvf siege-${VERSION}.tar.gz && \
+    rm siege-${VERSION}.tar.gz && \
+    cd siege-${VERSION} && \
+    ./configure && \
+    make install
 
 WORKDIR /projects
