@@ -76,7 +76,8 @@ ADD etc/before-start.sh /before-start.sh
 RUN apk add --no-cache git openssh
 
 # install siege
-RUN wget http://download.joedog.org/siege/siege-${SIEGE_VERSION}.tar.gz && \
+RUN apk add --no-cache g++ make && \
+    wget http://download.joedog.org/siege/siege-${SIEGE_VERSION}.tar.gz && \
     tar -zxvf siege-${SIEGE_VERSION}.tar.gz && \
     rm siege-${SIEGE_VERSION}.tar.gz && \
     cd siege-${SIEGE_VERSION} && \
