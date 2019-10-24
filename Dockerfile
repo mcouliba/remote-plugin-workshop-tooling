@@ -75,13 +75,24 @@ ADD etc/before-start.sh /before-start.sh
 # install git
 RUN apk add --no-cache git openssh
 
-# install siege
-RUN apk add --no-cache g++ make && \
-    wget http://download.joedog.org/siege/siege-${SIEGE_VERSION}.tar.gz && \
-    tar -zxvf siege-${SIEGE_VERSION}.tar.gz && \
-    rm siege-${SIEGE_VERSION}.tar.gz && \
-    cd siege-${SIEGE_VERSION} && \
+# install httperf
+RUN apk add --update --no-cache --virtual=.build-dependencies \
+            # unzip \
+            # libtool \
+            # build-base \
+            autoconf \
+            automake \
+            make && \
+    wget https://github.com/rtCamp/httperf/archive/master.zip && \
+    unzip master.zip && \
+    mkdir /usr/src/httperf-master/build && \
+    cd httperf-master && \
+    autoreconf -i && \
     ./configure && \
-    make install
+    make && \
+    make install && \
+    cd .. && \
+    rm -rf httperf-master /usr/src/master.zip && \
+    apk del .build-dependencies
 
 WORKDIR /projects
