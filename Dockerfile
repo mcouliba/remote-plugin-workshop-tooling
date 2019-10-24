@@ -79,7 +79,7 @@ RUN apk add --no-cache git openssh
 RUN apk add --update --no-cache --virtual=.build-dependencies \
             # unzip \
             libtool \
-            # build-base \
+            build-base \
             autoconf \
             automake \
             make && \
