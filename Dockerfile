@@ -85,14 +85,14 @@ RUN apk add --update --no-cache --virtual=.build-dependencies \
             make && \
     wget https://github.com/rtCamp/httperf/archive/master.zip && \
     unzip master.zip && \
-    mkdir /usr/src/httperf-master/build && \
+    mkdir httperf-master/build && \
     cd httperf-master && \
     autoreconf -i && \
     ./configure && \
     make && \
     make install && \
     cd .. && \
-    rm -rf httperf-master /usr/src/master.zip && \
+    rm -rf httperf-master master.zip && \
     apk del .build-dependencies
 
 WORKDIR /projects
