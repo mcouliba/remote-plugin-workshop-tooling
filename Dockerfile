@@ -78,10 +78,10 @@ RUN apk add --no-cache git openssh
 # install httperf
 RUN apk add --update --no-cache --virtual=.build-dependencies \
             # unzip \
-            # libtool \
+            libtool \
             # build-base \
             autoconf \
-            automake \
+            # automake \
             make && \
     wget https://github.com/rtCamp/httperf/archive/master.zip && \
     unzip master.zip && \
