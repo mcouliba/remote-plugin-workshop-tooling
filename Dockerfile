@@ -8,10 +8,20 @@
 # Contributors:
 #   Red Hat, Inc. - initial API and implementation
 
-FROM eclipse/che-theia-endpoint-runtime:7.3.0
+FROM alpine:3.10.2
 
-ENV GLIBC_VERSION=2.29-r0 \
-    ODO_VERSION=v1.0.0-beta6 \
+ENV HOME=/home/theia
+
+RUN mkdir /projects ${HOME} && \
+    # Change permissions to let any arbitrary user
+    for f in "${HOME}" "/etc/passwd" "/projects"; do \
+      echo "Changing permissions on ${f}" && chgrp -R 0 ${f} && \
+      chmod -R g+rwX ${f}; \
+    done
+
+
+ENV GLIBC_VERSION=2.30-r0 \
+    ODO_VERSION=v1.0.0 \
     OC_VERSION=4.2 \
     KUBECTL_VERSION=v1.14.6 \
     SQUASHCTL_VERSION=v0.5.12 \
@@ -96,3 +106,8 @@ RUN apk add --update --no-cache --virtual=.build-dependencies \
     apk del .build-dependencies
 
 WORKDIR /projects
+
+ADD etc/entrypoint.sh /entrypoint.sh
+
+ENTRYPOINT [ "/entrypoint.sh" ]
+CMD ${PLUGIN_REMOTE_ENDPOINT_EXECUTABLE}
