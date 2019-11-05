@@ -27,8 +27,7 @@ ENV GLIBC_VERSION=2.30-r0 \
     SQUASHCTL_VERSION=v0.5.12 \
     TKN_VERSION=0.4.0 \
     MAVEN_VERSION=3.6.2 \
-    JDK_VERSION=11 \
-    SIEGE_VERSION=3.1.4
+    JDK_VERSION=11
 
 # the plugin executes the commands relying on Bash
 RUN apk add --no-cache bash curl && \
@@ -38,7 +37,7 @@ RUN apk add --no-cache bash curl && \
     apk --update --allow-untrusted add glibc-${GLIBC_VERSION}.apk && \
     rm -f glibc-${GLIBC_VERSION}.apk && \
     # install odo
-    wget -O /usr/local/bin/odo https://github.com/openshift/odo/releases/download/${ODO_VERSION}/odo-linux-amd64 && \
+    wget -O /usr/local/bin/odo https://mirror.openshift.com/pub/openshift-v4/clients/odo/${ODO_VERSION}/odo-linux-amd64 && \
     chmod +x /usr/local/bin/odo && \
     odo version && \
     # install oc
