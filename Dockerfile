@@ -21,7 +21,7 @@ RUN mkdir /projects ${HOME} && \
 
 
 ENV GLIBC_VERSION=2.30-r0 \
-    ODO_VERSION=v1.0.1 \
+    ODO_VERSION=v1.0.0 \
     OC_VERSION=3.11.154 \
     KUBECTL_VERSION=v1.14.6 \
     SQUASHCTL_VERSION=v0.5.12 \
