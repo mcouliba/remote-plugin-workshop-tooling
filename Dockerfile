@@ -21,8 +21,8 @@ RUN mkdir /projects ${HOME} && \
 
 
 ENV GLIBC_VERSION=2.30-r0 \
-    ODO_VERSION=v1.0.0 \
-    OC_VERSION=4.2 \
+    ODO_VERSION=v1.0.1 \
+    OC_VERSION=3.11.154 \
     KUBECTL_VERSION=v1.14.6 \
     SQUASHCTL_VERSION=v0.5.12 \
     TKN_VERSION=0.4.0 \
@@ -41,7 +41,7 @@ RUN apk add --no-cache bash curl && \
     chmod +x /usr/local/bin/odo && \
     odo version && \
     # install oc
-    wget -qO- https://mirror.openshift.com/pub/openshift-v4/clients/oc/${OC_VERSION}/linux/oc.tar.gz | tar xvz -C /usr/local/bin && \
+    wget -qO- https://mirror.openshift.com/pub/openshift-v3/clients/${OC_VERSION}/linux/oc.tar.gz | tar xvz -C /usr/local/bin && \
     oc version && \
     # CA certificates
     apk --update --allow-untrusted add ca-certificates && rm -rf /var/cache/apk/*
