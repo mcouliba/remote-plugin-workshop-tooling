@@ -27,7 +27,9 @@ ENV GLIBC_VERSION=2.30-r0 \
     SQUASHCTL_VERSION=v0.5.12 \
     TKN_VERSION=0.4.0 \
     MAVEN_VERSION=3.6.2 \
-    JDK_VERSION=11
+    JDK_VERSION=11 \
+    YQ_VERSION=2.4.1 \
+    ARGOCD_VERSION=v1.3.0
 
 # the plugin executes the commands relying on Bash
 RUN apk add --no-cache bash curl && \
@@ -103,6 +105,14 @@ RUN apk add --update --no-cache --virtual=.build-dependencies \
     cd .. && \
     rm -rf httperf-master master.zip && \
     apk del .build-dependencies
+
+# install yq
+RUN wget -qO /usr/local/bin/yq https://github.com/mikefarah/yq/releases/download/${YQ_VERSION}/yq_linux_amd64 && \
+    chmod +x /usr/local/bin/yq
+
+# install argocd
+RUN wget -qO /usr/local/bin/argocd https://github.com/argoproj/argo-cd/releases/download/${ARGOCD_VERSION}/argocd-linux-amd64 && \
+    chmod +x /usr/local/bin/argocd
 
 WORKDIR /projects
 
