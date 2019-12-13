@@ -1,14 +1,4 @@
-# Copyright (c) 2019 Red Hat, Inc.
-# This program and the accompanying materials are made
-# available under the terms of the Eclipse Public License 2.0
-# which is available at https://www.eclipse.org/legal/epl-2.0/
-#
-# SPDX-License-Identifier: EPL-2.0
-#
-# Contributors:
-#   Red Hat, Inc. - initial API and implementation
-
-FROM alpine:3.10.2
+FROM registry.access.redhat.com/ubi8-minimal:8.1
 
 ENV HOME=/home/theia
 
@@ -31,22 +21,29 @@ ENV GLIBC_VERSION=2.30-r0 \
     YQ_VERSION=2.4.1 \
     ARGOCD_VERSION=v1.3.0
 
-# the plugin executes the commands relying on Bash
-RUN apk add --no-cache bash curl && \
-    # install glibc compatibility layer package for Alpine Linux
-    # see https://github.com/openshift/origin/issues/18942 for the details
-    wget -O glibc-${GLIBC_VERSION}.apk https://github.com/andyshinn/alpine-pkg-glibc/releases/download/${GLIBC_VERSION}/glibc-${GLIBC_VERSION}.apk && \
-    apk --update --allow-untrusted add glibc-${GLIBC_VERSION}.apk && \
-    rm -f glibc-${GLIBC_VERSION}.apk && \
-    # install odo
-    wget -O /usr/local/bin/odo https://mirror.openshift.com/pub/openshift-v4/clients/odo/${ODO_VERSION}/odo-linux-amd64 && \
+RUN microdnf install -y \
+        bash curl wget tar gzip java-${JDK_VERSION}-openjdk-devel git openssh which httpd && \
+    microdnf -y clean all && rm -rf /var/cache/yum && \
+    echo "Installed Packages" && rpm -qa | sort -V && echo "End Of Installed Packages" 
+
+# # the plugin executes the commands relying on Bash
+# RUN apk add --no-cache bash curl && \
+#     # install glibc compatibility layer package for Alpine Linux
+#     # see https://github.com/openshift/origin/issues/18942 for the details
+#     wget -O glibc-${GLIBC_VERSION}.apk https://github.com/andyshinn/alpine-pkg-glibc/releases/download/${GLIBC_VERSION}/glibc-${GLIBC_VERSION}.apk && \
+#     apk --update --allow-untrusted add glibc-${GLIBC_VERSION}.apk && \
+#     rm -f glibc-${GLIBC_VERSION}.apk && \
+#     # CA certificates
+#     apk --update --allow-untrusted add ca-certificates && rm -rf /var/cache/apk/*
+
+# install oc
+RUN wget -qO- https://mirror.openshift.com/pub/openshift-v3/clients/${OC_VERSION}/linux/oc.tar.gz | tar xvz -C /usr/local/bin && \
+    oc version 
+
+# install odo
+RUN wget -O /usr/local/bin/odo https://mirror.openshift.com/pub/openshift-v4/clients/odo/${ODO_VERSION}/odo-linux-amd64 && \
     chmod +x /usr/local/bin/odo && \
-    odo version && \
-    # install oc
-    wget -qO- https://mirror.openshift.com/pub/openshift-v3/clients/${OC_VERSION}/linux/oc.tar.gz | tar xvz -C /usr/local/bin && \
-    oc version && \
-    # CA certificates
-    apk --update --allow-untrusted add ca-certificates && rm -rf /var/cache/apk/*
+    odo version
 
 # install squashctl
 RUN wget -qO /usr/local/bin/squashctl https://github.com/solo-io/squash/releases/download/${SQUASHCTL_VERSION}/squashctl-linux && \
@@ -63,15 +60,13 @@ RUN mkdir ${HOME}/.vs-tekton && \
     ln -s /usr/local/bin/tkn ${HOME}/.vs-tekton/tkn && \
     tkn version
 
-# install openjdk
-RUN apk --no-cache add openjdk${JDK_VERSION} --repository=http://dl-cdn.alpinelinux.org/alpine/edge/community && \
-    apk add procps nss && \
-    chmod 777 /home/theia && \
-    find /usr/share/ca-certificates/mozilla/ -name "*.crt" -exec keytool -import -trustcacerts \
-    -keystore /usr/lib/jvm/java-${JDK_VERSION}-openjdk/jre/lib/security/cacerts  -storepass changeit -noprompt \
-    -file {} -alias {} \; && \
-    keytool -list -keystore /usr/lib/jvm/java-${JDK_VERSION}-openjdk/jre/lib/security/cacerts  --storepass changeit
-ENV JAVA_HOME /usr/lib/jvm/default-jvm/
+# install yq
+RUN wget -qO /usr/local/bin/yq https://github.com/mikefarah/yq/releases/download/${YQ_VERSION}/yq_linux_amd64 && \
+    chmod +x /usr/local/bin/yq
+
+# install argocd
+RUN wget -qO /usr/local/bin/argocd https://github.com/argoproj/argo-cd/releases/download/${ARGOCD_VERSION}/argocd-linux-amd64 && \
+    chmod +x /usr/local/bin/argocd
 
 # install maven
 ENV MAVEN_HOME /usr/lib/mvn
@@ -83,36 +78,8 @@ RUN wget http://archive.apache.org/dist/maven/maven-3/${MAVEN_VERSION}/binaries/
   mv apache-maven-$MAVEN_VERSION /usr/lib/mvn
 ADD etc/before-start.sh /before-start.sh
 
-# install git
-RUN apk add --no-cache git openssh
-
-# install httperf
-RUN apk add --update --no-cache --virtual=.build-dependencies \
-            # unzip \
-            libtool \
-            build-base \
-            autoconf \
-            automake \
-            make && \
-    wget https://github.com/rtCamp/httperf/archive/master.zip && \
-    unzip master.zip && \
-    mkdir httperf-master/build && \
-    cd httperf-master && \
-    autoreconf -i && \
-    ./configure && \
-    make && \
-    make install && \
-    cd .. && \
-    rm -rf httperf-master master.zip && \
-    apk del .build-dependencies
-
-# install yq
-RUN wget -qO /usr/local/bin/yq https://github.com/mikefarah/yq/releases/download/${YQ_VERSION}/yq_linux_amd64 && \
-    chmod +x /usr/local/bin/yq
-
-# install argocd
-RUN wget -qO /usr/local/bin/argocd https://github.com/argoproj/argo-cd/releases/download/${ARGOCD_VERSION}/argocd-linux-amd64 && \
-    chmod +x /usr/local/bin/argocd
+# Configure openjdk
+ENV JAVA_HOME /usr/lib/jvm/java
 
 WORKDIR /projects
 
