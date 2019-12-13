@@ -24,17 +24,7 @@ ENV GLIBC_VERSION=2.30-r0 \
 RUN microdnf install -y \
         bash curl wget tar gzip java-${JDK_VERSION}-openjdk-devel git openssh which httpd && \
     microdnf -y clean all && rm -rf /var/cache/yum && \
-    echo "Installed Packages" && rpm -qa | sort -V && echo "End Of Installed Packages" 
-
-# # the plugin executes the commands relying on Bash
-# RUN apk add --no-cache bash curl && \
-#     # install glibc compatibility layer package for Alpine Linux
-#     # see https://github.com/openshift/origin/issues/18942 for the details
-#     wget -O glibc-${GLIBC_VERSION}.apk https://github.com/andyshinn/alpine-pkg-glibc/releases/download/${GLIBC_VERSION}/glibc-${GLIBC_VERSION}.apk && \
-#     apk --update --allow-untrusted add glibc-${GLIBC_VERSION}.apk && \
-#     rm -f glibc-${GLIBC_VERSION}.apk && \
-#     # CA certificates
-#     apk --update --allow-untrusted add ca-certificates && rm -rf /var/cache/apk/*
+    echo "Installed Packages" && rpm -qa | sort -V && echo "End Of Installed Packages" a
 
 # install oc
 RUN wget -qO- https://mirror.openshift.com/pub/openshift-v3/clients/${OC_VERSION}/linux/oc.tar.gz | tar xvz -C /usr/local/bin && \
