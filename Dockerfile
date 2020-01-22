@@ -21,8 +21,9 @@ ENV GLIBC_VERSION=2.30-r0 \
     YQ_VERSION=2.4.1 \
     ARGOCD_VERSION=v1.3.0
 
-RUN microdnf install -y \
-        bash curl wget tar gzip java-${JDK_VERSION}-openjdk-devel git openssh which httpd && \
+RUN microdnf update &&\
+    microdnf install -y \
+        bash curl wget tar gzip java-${JDK_VERSION}-openjdk-devel git openssh which httpd procps && \
     microdnf -y clean all && rm -rf /var/cache/yum && \
     echo "Installed Packages" && rpm -qa | sort -V && echo "End Of Installed Packages" a
 
