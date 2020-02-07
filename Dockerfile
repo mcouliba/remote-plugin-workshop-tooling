@@ -2,13 +2,7 @@ FROM registry.access.redhat.com/ubi8-minimal:8.1
 
 ENV HOME=/home/theia
 
-RUN mkdir /projects ${HOME} && \
-    # Change permissions to let any arbitrary user
-    for f in "${HOME}" "/etc/passwd" "/projects"; do \
-      echo "Changing permissions on ${f}" && chgrp -R 0 ${f} && \
-      chmod -R g+rwX ${f}; \
-    done
-
+RUN mkdir /projects ${HOME}
 
 ENV GLIBC_VERSION=2.30-r0 \
     ODO_VERSION=v1.0.2 \
@@ -74,6 +68,12 @@ ENV JAVA_HOME /usr/lib/jvm/java
 WORKDIR /projects
 
 ADD etc/entrypoint.sh /entrypoint.sh
+
+# Change permissions to let any arbitrary user
+RUN for f in "${HOME}" "/etc/passwd" "/projects"; do \
+      echo "Changing permissions on ${f}" && chgrp -R 0 ${f} && \
+      chmod -R g+rwX ${f}; \
+    done
 
 ENTRYPOINT [ "/entrypoint.sh" ]
 CMD ${PLUGIN_REMOTE_ENDPOINT_EXECUTABLE}
