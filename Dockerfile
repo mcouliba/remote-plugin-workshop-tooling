@@ -11,33 +11,33 @@ RUN mkdir /projects ${HOME} && \
 
 
 ENV GLIBC_VERSION=2.30-r0 \
-    ODO_VERSION=v1.0.0 \
-    OC_VERSION=3.11.154 \
-    KUBECTL_VERSION=v1.14.6 \
-    SQUASHCTL_VERSION=v0.5.12 \
-    TKN_VERSION=0.4.0 \
+    ODO_VERSION=v1.0.2 \
+    OC_VERSION=4.3 \
+    KUBECTL_VERSION=v1.16.3 \
+    TKN_VERSION=0.7.1 \
     MAVEN_VERSION=3.6.2 \
     JDK_VERSION=11 \
     YQ_VERSION=2.4.1 \
     ARGOCD_VERSION=v1.3.0
 
 RUN microdnf install -y \
-        bash curl wget tar gzip java-${JDK_VERSION}-openjdk-devel git openssh which httpd && \
+        bash curl wget tar gzip java-${JDK_VERSION}-openjdk-devel git openssh which httpd python36 && \
     microdnf -y clean all && rm -rf /var/cache/yum && \
-    echo "Installed Packages" && rpm -qa | sort -V && echo "End Of Installed Packages" a
+    echo "Installed Packages" && rpm -qa | sort -V && echo "End Of Installed Packages"
+
+# install telepresence
+RUN git clone https://github.com/telepresenceio/telepresence.git && \
+    cd telepresence && PREFIX=/usr/local ./install.sh && \
+    echo "Installed Telepresence"
 
 # install oc
-RUN wget -qO- https://mirror.openshift.com/pub/openshift-v3/clients/${OC_VERSION}/linux/oc.tar.gz | tar xvz -C /usr/local/bin && \
+RUN wget -qO- https://mirror.openshift.com/pub/openshift-v4/clients/oc/${OC_VERSION}/linux/oc.tar.gz | tar xvz -C /usr/local/bin && \
     oc version 
 
 # install odo
 RUN wget -O /usr/local/bin/odo https://mirror.openshift.com/pub/openshift-v4/clients/odo/${ODO_VERSION}/odo-linux-amd64 && \
     chmod +x /usr/local/bin/odo && \
     odo version
-
-# install squashctl
-RUN wget -qO /usr/local/bin/squashctl https://github.com/solo-io/squash/releases/download/${SQUASHCTL_VERSION}/squashctl-linux && \
-    chmod +x /usr/local/bin/squashctl
 
 # install kubectl
 ADD https://storage.googleapis.com/kubernetes-release/release/${KUBECTL_VERSION}/bin/linux/amd64/kubectl /usr/local/bin/kubectl
