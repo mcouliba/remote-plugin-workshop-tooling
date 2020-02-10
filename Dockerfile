@@ -6,9 +6,9 @@ RUN mkdir /projects ${HOME}
 
 ENV GLIBC_VERSION=2.30-r0 \
     ODO_VERSION=v1.0.2 \
-    OC_VERSION=4.3 \
+    OC_VERSION=3.11.170 \
     KUBECTL_VERSION=v1.16.3 \
-    TKN_VERSION=0.7.1 \
+    TKN_VERSION=0.6.0 \
     MAVEN_VERSION=3.6.2 \
     JDK_VERSION=11 \
     YQ_VERSION=2.4.1 \
@@ -25,7 +25,7 @@ RUN git clone https://github.com/telepresenceio/telepresence.git && \
     echo "Installed Telepresence"
 
 # install oc
-RUN wget -qO- https://mirror.openshift.com/pub/openshift-v4/clients/oc/${OC_VERSION}/linux/oc.tar.gz | tar xvz -C /usr/local/bin && \
+RUN wget -qO- https://mirror.openshift.com/pub/openshift-v3/clients/${OC_VERSION}/linux/oc.tar.gz | tar xvz -C /usr/local/bin && \
     oc version 
 
 # install odo
