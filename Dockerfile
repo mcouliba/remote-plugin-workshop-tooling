@@ -12,17 +12,13 @@ ENV GLIBC_VERSION=2.30-r0 \
     MAVEN_VERSION=3.6.2 \
     JDK_VERSION=11 \
     YQ_VERSION=2.4.1 \
-    ARGOCD_VERSION=v1.3.0
+    ARGOCD_VERSION=v1.3.0 \
+    IKE_VERSION=0.0.2
 
 RUN microdnf install -y \
         bash curl wget tar gzip java-${JDK_VERSION}-openjdk-devel git openssh which httpd python36 && \
     microdnf -y clean all && rm -rf /var/cache/yum && \
     echo "Installed Packages" && rpm -qa | sort -V && echo "End Of Installed Packages"
-
-# install telepresence
-RUN git clone https://github.com/telepresenceio/telepresence.git && \
-    cd telepresence && PREFIX=/usr/local ./install.sh && \
-    echo "Installed Telepresence"
 
 # install oc
 RUN wget -qO- https://mirror.openshift.com/pub/openshift-v4/clients/oc/${OC_VERSION}/linux/oc.tar.gz | tar xvz -C /usr/local/bin && \
@@ -40,7 +36,7 @@ RUN chmod +x /usr/local/bin/kubectl && \
 
 # install tekton
 RUN mkdir ${HOME}/.vs-tekton && \
-    wget -qO- "https://github.com/tektoncd/cli/releases/download/v${TKN_VERSION}/tkn_${TKN_VERSION}_Linux_x86_64.tar.gz" | tar xvz -C /usr/local/bin && \
+    wget -qO- https://github.com/tektoncd/cli/releases/download/v${TKN_VERSION}/tkn_${TKN_VERSION}_Linux_x86_64.tar.gz | tar xvz -C /usr/local/bin && \
     ln -s /usr/local/bin/tkn ${HOME}/.vs-tekton/tkn && \
     tkn version
 
@@ -61,6 +57,18 @@ RUN wget http://archive.apache.org/dist/maven/maven-3/${MAVEN_VERSION}/binaries/
   rm apache-maven-$MAVEN_VERSION-bin.tar.gz && \
   mv apache-maven-$MAVEN_VERSION /usr/lib/mvn
 ADD etc/before-start.sh /before-start.sh
+
+# install telepresence
+RUN git clone https://github.com/telepresenceio/telepresence.git && \
+    cd telepresence && PREFIX=/usr/local ./install.sh && \
+    echo "Installed Telepresence"
+
+# install ike
+RUN wget https://github.com/Maistra/istio-workspace/releases/download/v${IKE_VERSION}/ike_${IKE_VERSION}_Linux_x86_64.tar.gz && \
+    tar -zxvf ike_${IKE_VERSION}_Linux_x86_64.tar.gz && \
+    rm ike_${IKE_VERSION}_Linux_x86_64.tar.gz && \
+    mv ike /usr/local/bin && \
+    ike version
 
 # Configure openjdk
 ENV JAVA_HOME /usr/lib/jvm/java
