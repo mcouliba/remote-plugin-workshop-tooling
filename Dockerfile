@@ -59,9 +59,19 @@ RUN wget http://archive.apache.org/dist/maven/maven-3/${MAVEN_VERSION}/binaries/
 ADD etc/before-start.sh /before-start.sh
 
 # install telepresence
+ENV TELEPRESENCE_VERSION 0.104
 RUN git clone https://github.com/telepresenceio/telepresence.git && \
     cd telepresence && PREFIX=/usr/local ./install.sh && \
     echo "Installed Telepresence"
+
+RUN rpm -Uvh https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm && \
+    microdnf install -y sshfs && \
+    rpm -e epel-release-7-12 && \
+    rpm -Uvh https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm && \
+    microdnf install -y torsocks && \
+    rpm -e epel-release-8-7.el8 && \
+    microdnf clean all -y && \
+    echo "Installed Telepresence Dependencies"
 
 # install ike
 RUN wget https://github.com/Maistra/istio-workspace/releases/download/v${IKE_VERSION}/ike_${IKE_VERSION}_Linux_x86_64.tar.gz && \
