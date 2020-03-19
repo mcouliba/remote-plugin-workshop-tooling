@@ -6,7 +6,7 @@ RUN mkdir /projects ${HOME}
 
 ENV GLIBC_VERSION=2.30-r0 \
     ODO_VERSION=v1.0.2 \
-    OC_VERSION=3.11.170 \
+    OC_VERSION=4.3.2 \
     KUBECTL_VERSION=v1.16.3 \
     TKN_VERSION=0.6.0 \
     MAVEN_VERSION=3.6.2 \
@@ -21,8 +21,8 @@ RUN microdnf install -y \
     echo "Installed Packages" && rpm -qa | sort -V && echo "End Of Installed Packages"
 
 # install oc
-RUN wget -qO- https://mirror.openshift.com/pub/openshift-v3/clients/${OC_VERSION}/linux/oc.tar.gz | tar xvz -C /usr/local/bin && \
-    oc version 
+RUN wget -qO- https://mirror.openshift.com/pub/openshift-v4/clients/ocp/${OC_VERSION}/openshift-client-linux-${OC_VERSION}.tar.gz | tar xvz -C /usr/local/bin && \
+    oc version
 
 # install odo
 RUN wget -O /usr/local/bin/odo https://mirror.openshift.com/pub/openshift-v4/clients/odo/${ODO_VERSION}/odo-linux-amd64 && \
