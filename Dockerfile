@@ -13,7 +13,7 @@ ENV GLIBC_VERSION=2.30-r0 \
     JDK_VERSION=11 \
     YQ_VERSION=2.4.1 \
     ARGOCD_VERSION=v1.3.0 \
-    IKE_VERSION=0.0.2
+    IKE_VERSION=0.0.3
 
 RUN microdnf install -y \
         bash curl wget tar gzip java-${JDK_VERSION}-openjdk-devel git openssh which httpd python36 && \
