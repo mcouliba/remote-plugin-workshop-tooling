@@ -1,4 +1,4 @@
-FROM registry.access.redhat.com/ubi8-minimal:8.1
+FROM registry.access.redhat.com/ubi8-minimal:8.1-407
 
 ENV HOME=/home/theia
 
