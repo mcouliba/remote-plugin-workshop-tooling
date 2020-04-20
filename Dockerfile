@@ -17,7 +17,7 @@ ENV GLIBC_VERSION=2.30-r0 \
     JAVA_TOOL_OPTIONS="-Djava.net.preferIPv4Stack=true"
 
 RUN microdnf install -y \
-        bash curl wget tar gzip java-${JDK_VERSION}-openjdk-devel git openssh which httpd python36 && \
+        bash curl wget tar gzip java-${JDK_VERSION}-openjdk-devel git openssh which httpd python36 procps && \
     microdnf -y clean all && rm -rf /var/cache/yum && \
     echo "Installed Packages" && rpm -qa | sort -V && echo "End Of Installed Packages"
 
