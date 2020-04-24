@@ -5,14 +5,14 @@ ENV HOME=/home/theia
 RUN mkdir /projects ${HOME}
 
 ENV GLIBC_VERSION=2.30-r0 \
-    ODO_VERSION=v1.0.2 \
-    OC_VERSION=3.11.170 \
+    ODO_VERSION=v1.1.3 \
+    OC_VERSION=4.3 \
     KUBECTL_VERSION=v1.16.3 \
-    TKN_VERSION=0.6.0 \
+    TKN_VERSION=0.8.0 \
     MAVEN_VERSION=3.6.2 \
     JDK_VERSION=11 \
     YQ_VERSION=2.4.1 \
-    ARGOCD_VERSION=v1.3.0 \
+    ARGOCD_VERSION=v1.5.2 \
     IKE_VERSION=0.0.3 \
     JAVA_TOOL_OPTIONS="-Djava.net.preferIPv4Stack=true"
 
@@ -22,7 +22,7 @@ RUN microdnf install -y \
     echo "Installed Packages" && rpm -qa | sort -V && echo "End Of Installed Packages"
 
 # install oc
-RUN wget -qO- https://mirror.openshift.com/pub/openshift-v3/clients/${OC_VERSION}/linux/oc.tar.gz | tar xvz -C /usr/local/bin && \
+RUN wget -qO- https://mirror.openshift.com/pub/openshift-v4/clients/oc/${OC_VERSION}/linux/oc.tar.gz | tar xvz -C /usr/local/bin && \
     oc version 
 
 # install odo
