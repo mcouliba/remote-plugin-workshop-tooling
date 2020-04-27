@@ -45,10 +45,10 @@ RUN mkdir ${HOME}/.vs-tekton && \
 #install GraalVM
 ENV GRAALVM_HOME /usr/lib/graalvm
 ENV PATH ${GRAALVM_HOME}/bin:$PATH
-run wget -qO- https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-${GRAALVM_VERSION}/graalvm-ce-java${JDK_VERSION}-linux-amd64-${GRAALVM_VERSION}.tar.gz && \
+RUN wget -qO- https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-${GRAALVM_VERSION}/graalvm-ce-java${JDK_VERSION}-linux-amd64-${GRAALVM_VERSION}.tar.gz && \
     tar -zxvf graalvm-ce-java${JDK_VERSION}-linux-amd64-${GRAALVM_VERSION}.tar.gz && \
     rm graalvm-ce-java${JDK_VERSION}-linux-amd64-${GRAALVM_VERSION}.tar.gz && \
-    mv graalvm-ce-java${JDK_VERSION}-linux-amd64-${GRAALVM_VERSION} /usr/lib/graalvm
+    mv graalvm-ce-java${JDK_VERSION}-${GRAALVM_VERSION} /usr/lib/graalvm
 
 # install yq
 RUN wget -qO /usr/local/bin/yq https://github.com/mikefarah/yq/releases/download/${YQ_VERSION}/yq_linux_amd64 && \
