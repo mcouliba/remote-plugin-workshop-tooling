@@ -14,6 +14,7 @@ ENV GLIBC_VERSION=2.30-r0 \
     YQ_VERSION=2.4.1 \
     ARGOCD_VERSION=v1.5.2 \
     IKE_VERSION=0.0.3 \
+    GRAALVM_VERSION=20.0.0 \
     JAVA_TOOL_OPTIONS="-Djava.net.preferIPv4Stack=true"
 
 RUN microdnf install -y \
@@ -41,6 +42,14 @@ RUN mkdir ${HOME}/.vs-tekton && \
     ln -s /usr/local/bin/tkn ${HOME}/.vs-tekton/tkn && \
     tkn version
 
+#install GraalVM
+ENV GRAALVM_HOME /usr/lib/graalvm
+ENV PATH ${GRAALVM_HOME}/bin:$PATH
+run wget -qO- https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-${GRAALVM_VERSION}/graalvm-ce-java${JDK_VERSION}-linux-amd64-${GRAALVM_VERSION}.tar.gz && \
+    tar -zxvf graalvm-ce-java${JDK_VERSION}-linux-amd64-${GRAALVM_VERSION}.tar.gz && \
+    rm graalvm-ce-java${JDK_VERSION}-linux-amd64-${GRAALVM_VERSION}.tar.gz && \
+    mv graalvm-ce-java${JDK_VERSION}-linux-amd64-${GRAALVM_VERSION} /usr/lib/graalvm
+
 # install yq
 RUN wget -qO /usr/local/bin/yq https://github.com/mikefarah/yq/releases/download/${YQ_VERSION}/yq_linux_amd64 && \
     chmod +x /usr/local/bin/yq
@@ -51,7 +60,7 @@ RUN wget -qO /usr/local/bin/argocd https://github.com/argoproj/argo-cd/releases/
 
 # install maven
 ENV MAVEN_HOME /usr/lib/mvn
-ENV PATH $MAVEN_HOME/bin:$PATH
+ENV PATH ${MAVEN_HOME}/bin:$PATH
 
 RUN wget http://archive.apache.org/dist/maven/maven-3/${MAVEN_VERSION}/binaries/apache-maven-${MAVEN_VERSION}-bin.tar.gz && \
   tar -zxvf apache-maven-$MAVEN_VERSION-bin.tar.gz && \
@@ -79,8 +88,8 @@ RUN curl -sL http://git.io/get-ike | bash -s  -- --version=v${IKE_VERSION} --dir
     echo "Installed istio-workspace" && \
     ike version
 
-# Configure openjdk
-ENV JAVA_HOME /usr/lib/jvm/java
+# Configure Java
+ENV JAVA_HOME ${GRAALVM_HOME}
 
 WORKDIR /projects
 
