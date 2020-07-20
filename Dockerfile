@@ -8,8 +8,8 @@ ENV GLIBC_VERSION=2.30-r0 \
     ODO_VERSION=v1.1.3 \
     OC_VERSION=4.3 \
     KUBECTL_VERSION=v1.16.3 \
-    TKN_VERSION=0.8.0 \
-    MAVEN_VERSION=3.6.2 \
+    TKN_VERSION=0.10.0 \
+    MAVEN_VERSION=3.6.3 \
     JDK_VERSION=11 \
     YQ_VERSION=2.4.1 \
     ARGOCD_VERSION=v1.5.2 \
@@ -45,7 +45,7 @@ RUN mkdir ${HOME}/.vs-tekton && \
 #install GraalVM
 ENV GRAALVM_HOME /usr/lib/graalvm
 ENV PATH ${GRAALVM_HOME}/bin:$PATH
-RUN wget -qO- https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-${GRAALVM_VERSION}/graalvm-ce-java${JDK_VERSION}-linux-amd64-${GRAALVM_VERSION}.tar.gz && \
+RUN wget https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-${GRAALVM_VERSION}/graalvm-ce-java${JDK_VERSION}-linux-amd64-${GRAALVM_VERSION}.tar.gz && \
     tar -zxvf graalvm-ce-java${JDK_VERSION}-linux-amd64-${GRAALVM_VERSION}.tar.gz && \
     rm graalvm-ce-java${JDK_VERSION}-linux-amd64-${GRAALVM_VERSION}.tar.gz && \
     mv graalvm-ce-java${JDK_VERSION}-${GRAALVM_VERSION} /usr/lib/graalvm
