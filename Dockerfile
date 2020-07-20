@@ -79,7 +79,7 @@ RUN rpm -Uvh https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.
     rpm -e epel-release-7-12 && \
     rpm -Uvh https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm && \
     microdnf install -y torsocks && \
-    rpm -e epel-release-8-7.el8 && \
+    rpm -e epel-release-8-8.el8 && \
     microdnf clean all -y && \
     echo "Installed Telepresence Dependencies"
 
