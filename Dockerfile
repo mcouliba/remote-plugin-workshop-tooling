@@ -5,14 +5,14 @@ ENV HOME=/home/theia
 RUN mkdir /projects ${HOME}
 
 ENV GLIBC_VERSION=2.30-r0 \
-    ODO_VERSION=v1.2.4 \
-    OC_VERSION=4.5 \
-    KUBECTL_VERSION=v1.18.6 \
-    TKN_VERSION=0.11.0 \
+    ODO_VERSION=v2.0.0 \
+    OC_VERSION=4.6 \
+    KUBECTL_VERSION=v1.19.3 \
+    TKN_VERSION=0.13.0 \
     MAVEN_VERSION=3.6.3 \
     JDK_VERSION=11 \
     YQ_VERSION=2.4.1 \
-    ARGOCD_VERSION=v1.6.1 \
+    ARGOCD_VERSION=v1.7.7 \
     IKE_VERSION=0.0.3 \
     GRAALVM_VERSION=20.0.0 \
     JAVA_TOOL_OPTIONS="-Djava.net.preferIPv4Stack=true"
