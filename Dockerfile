@@ -27,9 +27,13 @@ RUN wget -qO- https://mirror.openshift.com/pub/openshift-v4/clients/oc/${OC_VERS
     oc version --client
 
 # install odo
-RUN wget -O /usr/local/bin/odo https://mirror.openshift.com/pub/openshift-v4/clients/odo/${ODO_VERSION}/odo-linux-amd64 && \
-    chmod +x /usr/local/bin/odo && \
-    odo version --client
+# RUN wget -O /usr/local/bin/odo https://mirror.openshift.com/pub/openshift-v4/clients/odo/${ODO_VERSION}/odo-linux-amd64 && \
+#     chmod +x /usr/local/bin/odo && \
+#     odo version --client
+
+# Using a specific version of odo integrating PR and PR
+ADD tools/odo /usr/local/bin/odo
+RUN odo version --client
 
 # install kubectl
 ADD https://storage.googleapis.com/kubernetes-release/release/${KUBECTL_VERSION}/bin/linux/amd64/kubectl /usr/local/bin/kubectl
