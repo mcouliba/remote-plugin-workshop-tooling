@@ -32,8 +32,11 @@ RUN wget -qO- https://mirror.openshift.com/pub/openshift-v4/clients/oc/${OC_VERS
 #     odo version --client
 
 # Using a specific version of odo integrating PR and PR
-ADD tools/odo /usr/local/bin/odo
-RUN odo version --client
+ADD tools/custom-odo-linux-amd64.tar.gz .
+RUN tar -zxvf custom-odo-linux-amd64.tar.gz && \
+    rm custom-odo-linux-amd64.tar.gz && \
+    mv odo /usr/local/bin && \
+    odo version --client
 
 # install kubectl
 ADD https://storage.googleapis.com/kubernetes-release/release/${KUBECTL_VERSION}/bin/linux/amd64/kubectl /usr/local/bin/kubectl
