@@ -6,7 +6,7 @@ RUN mkdir /projects ${HOME}
 
 ENV GLIBC_VERSION=2.30-r0 \
     ODO_VERSION=v2.0.0 \
-    OC_VERSION=4.6 \
+    OC_VERSION=4.5 \
     KUBECTL_VERSION=v1.19.3 \
     TKN_VERSION=0.13.0 \
     MAVEN_VERSION=3.6.3 \
