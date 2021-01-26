@@ -33,8 +33,7 @@ RUN wget -qO- https://mirror.openshift.com/pub/openshift-v4/clients/oc/${OC_VERS
 
 # Using a specific version of odo integrating PR and PR
 ADD tools/custom_odo_linux_amd64.tar.gz /tmp
-RUN mv /tmp/odo /usr/local/bin && \
-    chmod +x /usr/local/bin/odo && \
+RUN mv /tmp/odo-linux-amd64 /usr/local/bin/odo && \
     odo version --client
 
 # install kubectl
