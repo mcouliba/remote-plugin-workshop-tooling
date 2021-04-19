@@ -5,7 +5,7 @@ ENV HOME=/home/theia
 RUN mkdir /projects ${HOME}
 
 ENV GLIBC_VERSION=2.30-r0 \
-    ODO_VERSION=v2.0.0 \
+    ODO_VERSION=v2.0.7 \
     OC_VERSION=4.7 \
     KUBECTL_VERSION=v1.20.6 \
     TKN_VERSION=0.13.0 \
@@ -22,18 +22,18 @@ RUN microdnf install -y \
     echo "Installed Packages" && rpm -qa | sort -V && echo "End Of Installed Packages"
 
 # install oc
-RUN wget -qO- https://mirror.openshift.com/pub/openshift-v4/clients/oc/${OC_VERSION}/linux/oc.tar.gz | tar xvz -C /usr/local/bin && \
+RUN wget -qO- https://mirror.openshift.com/pub/openshift-v4/clients//ocp/stable-${OC_VERSION}/openshift-client-linux.tar.gz | tar xvz -C /usr/local/bin && \
     oc version --client
 
 # install odo
-# RUN wget -O /usr/local/bin/odo https://mirror.openshift.com/pub/openshift-v4/clients/odo/${ODO_VERSION}/odo-linux-amd64 && \
-#     chmod +x /usr/local/bin/odo && \
-#     odo version --client
+RUN wget -O /usr/local/bin/odo https://mirror.openshift.com/pub/openshift-v4/clients/odo/${ODO_VERSION}/odo-linux-amd64 && \
+    chmod +x /usr/local/bin/odo && \
+    odo version --client
 
 # Using a specific version of odo integrating PR and PR
-ADD tools/custom_odo_linux_amd64.tar.gz /tmp
-RUN mv /tmp/odo-linux-amd64 /usr/local/bin/odo && \
-    odo version --client
+# ADD tools/custom_odo_linux_amd64.tar.gz /tmp
+# RUN mv /tmp/odo-linux-amd64 /usr/local/bin/odo && \
+#     odo version --client
 
 # install kubectl
 ADD https://storage.googleapis.com/kubernetes-release/release/${KUBECTL_VERSION}/bin/linux/amd64/kubectl /usr/local/bin/kubectl
@@ -65,10 +65,10 @@ RUN git clone https://github.com/telepresenceio/telepresence.git && \
 
 RUN rpm -Uvh https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm && \
     microdnf install -y sshfs && \
-    rpm -e epel-release-7-12 && \
+    rpm -e epel-release-7-13 && \
     rpm -Uvh https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm && \
     microdnf install -y torsocks && \
-    rpm -e epel-release-8-8.el8 && \
+    rpm -e epel-release-8-10.el8 && \
     microdnf clean all -y && \
     echo "Installed Telepresence Dependencies"
 
