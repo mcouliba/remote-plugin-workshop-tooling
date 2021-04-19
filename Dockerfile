@@ -13,7 +13,7 @@ ENV GLIBC_VERSION=2.30-r0 \
     JDK_VERSION=11 \
     YQ_VERSION=2.4.1 \
     ARGOCD_VERSION=v1.7.7 \
-    GRAALVM_VERSION=20.0.0 \
+    IKE_VERSION=0.1.0 \
     JAVA_TOOL_OPTIONS="-Djava.net.preferIPv4Stack=true"
 
 RUN microdnf install -y \
@@ -46,14 +46,6 @@ RUN mkdir ${HOME}/.vs-tekton && \
     ln -s /usr/local/bin/tkn ${HOME}/.vs-tekton/tkn && \
     tkn version
 
-#install GraalVM
-ENV GRAALVM_HOME /usr/lib/graalvm
-ENV PATH ${GRAALVM_HOME}/bin:$PATH
-RUN wget https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-${GRAALVM_VERSION}/graalvm-ce-java${JDK_VERSION}-linux-amd64-${GRAALVM_VERSION}.tar.gz && \
-    tar -zxvf graalvm-ce-java${JDK_VERSION}-linux-amd64-${GRAALVM_VERSION}.tar.gz && \
-    rm graalvm-ce-java${JDK_VERSION}-linux-amd64-${GRAALVM_VERSION}.tar.gz && \
-    mv graalvm-ce-java${JDK_VERSION}-${GRAALVM_VERSION} /usr/lib/graalvm
-
 # install yq
 RUN wget -qO /usr/local/bin/yq https://github.com/mikefarah/yq/releases/download/${YQ_VERSION}/yq_linux_amd64 && \
     chmod +x /usr/local/bin/yq
@@ -61,6 +53,28 @@ RUN wget -qO /usr/local/bin/yq https://github.com/mikefarah/yq/releases/download
 # install argocd
 RUN wget -qO /usr/local/bin/argocd https://github.com/argoproj/argo-cd/releases/download/${ARGOCD_VERSION}/argocd-linux-amd64 && \
     chmod +x /usr/local/bin/argocd
+
+
+# install ike + telepresence
+# install telepresence
+ENV TELEPRESENCE_VERSION=0.109
+RUN git clone https://github.com/telepresenceio/telepresence.git && \
+    cd telepresence && git checkout ${TELEPRESENCE_VERSION} &&\
+    PREFIX=/usr/local ./install.sh && \
+    echo "Installed Telepresence"
+
+RUN rpm -Uvh https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm && \
+    microdnf install -y sshfs && \
+    rpm -e epel-release-7-12 && \
+    rpm -Uvh https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm && \
+    microdnf install -y torsocks && \
+    rpm -e epel-release-8-8.el8 && \
+    microdnf clean all -y && \
+    echo "Installed Telepresence Dependencies"
+
+RUN curl -sL http://git.io/get-ike | bash -s  -- --version=v${IKE_VERSION} --dir=/usr/local/bin && \
+    echo "Installed istio-workspace" && \
+    ike version
 
 # install maven
 ENV MAVEN_HOME /usr/lib/mvn
