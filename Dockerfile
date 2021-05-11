@@ -13,7 +13,7 @@ ENV GLIBC_VERSION=2.30-r0 \
     JDK_VERSION=11 \
     YQ_VERSION=2.4.1 \
     ARGOCD_VERSION=v1.7.7 \
-    IKE_VERSION=0.1.0 \
+    IKE_VERSION=0.2.0 \
     JAVA_TOOL_OPTIONS="-Djava.net.preferIPv4Stack=true"
 
 RUN microdnf install -y \
